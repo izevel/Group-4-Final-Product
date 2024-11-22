@@ -1,0 +1,29 @@
+<!DOCTYPE html> 
+<html lang="en">
+  <head>
+    <title>Pathway Visualization</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.0/d3.min.js"></script>
+  <style>
+    .link { stroke: #000000; stroke-width: 1; }
+  </style>
+</head>
+
+<header style="background-color: #002b5b; color: white; padding: 10px;">
+  <h1>Systemic Infection Gene Research</h1>
+  <nav>
+    <a href="#about" style="color: white; margin: 10px;">About</a>
+    <a href="#visualization" style="color: white; margin: 10px;">Visualizations</a>
+    <a href="#methodology" style="color: white; margin: 10px;">Methodology</a>
+    <a href="#references" style="color: white; margin: 10px;">References</a>
+  </nav>
+</header>
+
+
+<details>
+  <summary>What is an inflammatory response?</summary>
+  <p>The inflammatory response occurs when bacteria, trauma, toxins, heat, or any other causes injure tissues...</p>
+</details>
+<details>
+  <summary>What is a systemic infection?</summary>
+  <p>An infection that is in the bloodstream is called a systemic infection...</p>
+</details>
