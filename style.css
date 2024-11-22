@@ -1,0 +1,39 @@
+body {
+    background-color: azure;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #002b5b;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    margin: 10px;
+    text-decoration: none;
+}
+
+section {
+    padding: 20px;
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+footer {
+    background-color: #002b5b;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.cta-button {
+    background-color: #002b5b;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
