@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Our Research</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1 class="title">About Our Research</h1>
+        <nav>
+            <a href="homepage.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="biomarkers.html">Biomarkers</a>
+            <a href="visualizations.html">Explore</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="intro" class="highlight-section">
+            <h2>Understanding Inflammation and Systemic Infections</h2>
+            <p>
+                Exploring the genes and pathways that drive inflammatory responses, unlocking insights for better healthcare.
+            </p>
+        </section>
+
+        <section id="systemic-inflammation">
+            <h2>What is Systemic Inflammation?</h2>
+            <p>
+                Systemic inflammation is a widespread immune response that extends beyond a localized injury or infection, 
+                affecting the entire body. While essential for healing, excessive or prolonged inflammation can cause 
+                serious health complications.
+            </p>
+        </section>
+
+        <section id="causes">
+            <h2>How Does It Start?</h2>
+            <p>
+                Systemic inflammation often begins as a localized response where immune cells release cytokines to 
+                coordinate defense. If these signals enter the bloodstream, a body-wide reaction may occur, sometimes 
+                escalating into a cytokine storm.
+            </p>
+        </section>
+
+        <section id="symptoms">
+            <h2>Symptoms of Systemic Inflammation</h2>
+            <p>
+                <strong>Localized Signs:</strong> Redness, swelling, heat, and pain.<br>
+                <strong>Body-wide Symptoms:</strong> Fever, fatigue, muscle aches, and cardiovascular changes, which may 
+                escalate to organ dysfunction or shock in severe cases.
+            </p>
+        </section>
+
+        <section id="biomarkers">
+            <h2>Why Biomarkers Matter</h2>
+            <p>
+                Biomarkers like IL-6, IL-1, TNF-alpha, and CRP help monitor inflammation. Cytokines initiate and regulate 
+                immune responses, while CRP, produced by the liver, is a critical clinical indicator of systemic inflammation.
+            </p>
+        </section>
+
+        <section id="importance">
+            <h2>Why Systemic Inflammation Matters</h2>
+            <p>
+                Unchecked inflammation can lead to severe acute conditions or contribute to chronic diseases like 
+                cardiovascular disorders. Understanding its mechanisms and biomarkers enables early diagnosis, effective 
+                treatment, and better health outcomes.
+            </p>
+        </section>
+
+        <section id="research-tools">
+            <h2>Our Research Tools and Approach</h2>
+            <ul>
+                <li><strong>WikiPathways SPARQL Endpoint:</strong> Queries pathways linked to inflammation.</li>
+                <li><strong>DisGeNet:</strong> Identifies gene-disease associations.</li>
+                <li><strong>Cytoscape.js:</strong> Creates interactive visualizations of genes and pathways.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Systemic Infection Research. All rights reserved.</p>
+    </footer>
+</body>
+</html>
 
