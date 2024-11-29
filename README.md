@@ -20,3 +20,5 @@ To get a local copy of this project up and running, follow these steps:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/Group-4-Final-Product.git
+
+* Contributions are welcome! If you'd like to improve the website or add new pathway visualizations, feel free to fork the repository and submit a pull request.
