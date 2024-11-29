@@ -6,7 +6,7 @@ This repository contains resources for a web-based project related to biomarkers
 
 The project is built with a simple HTML, CSS, and image-based structure. It includes an informative website that presents these pathways alongside their respective images. The website is styled with custom CSS to ensure an engaging and clean user experience.
 
-This project was developed during the **Practical Programming in the Life Sciences (2425-PRA3006)** course at **Maastricht University**, part of the **Maastricht Science Programme**. 
+This project was developed during the **Practical Programming in the Life Sciences (2425-PRA3006)** course at **Maastricht University**, in the **Maastricht Science Programme** bachelor's degree. 
 
 The objective of the course is to learn how to interact with SPARQL endpoints using JavaScript and visualize the results graphically with libraries like **d3.js** or **Cytoscape.js**.
 
