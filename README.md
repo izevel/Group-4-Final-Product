@@ -17,12 +17,20 @@ The project is built with a simple HTML, CSS, and image-based structure. It incl
 
 To get a local copy of this project up and running, follow these steps:
 
+## Getting Started
+
+To get a local copy of this project up and running, follow these steps:
+
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/Group-4-Final-Product.git
+   ```
+
 2. **Navigate to the website directory**:
-cd Group-4-Final-Product/website
+   ```bash
+   cd Group-4-Final-Product/website
+   ```
 
-3. **Open the homepage.html file in your preferred web browser to view the project.**
+3. **Open the `homepage.html` file in your preferred web browser to view the project.**
 
-* Contributions are welcome! If you'd like to improve the website or add new pathway visualizations, feel free to fork the repository and submit a pull request.
+*Contributions are welcome! If you'd like to improve the website or add new pathway visualizations, feel free to fork the repository and submit a pull request.*
