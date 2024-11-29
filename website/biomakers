@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Biomarkers Associated with Inflammatory Responses</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@300&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+        <style>
+            /* Style for tooltips */
+            .tooltip {
+                position: relative;
+                display: inline-block;
+                cursor: pointer;
+                color: #007bff;
+                text-decoration: underline;
+            }
+            .tooltip .tooltiptext {
+                visibility: hidden;
+                width: 200px;
+                background-color: #555;
+                color: #fff;
+                text-align: center;
+                border-radius: 5px;
+                padding: 5px;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%; /* Position above the text */
+                left: 50%;
+                margin-left: -100px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+                opacity: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1 class="title">Biomarkers</h1>
+            <nav>
+                <a href="homepage.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="biomarkers.html">Biomarkers</a>
+                <a href="visualizations.html">Explore</a>
+            </nav>
+        </header>
+
+        <section>
+            <h2>Introduction to Key Biomarkers</h2>
+            <p>
+                Systemic inflammation is triggered by the activation of specific signaling molecules known as 
+                <span class="tooltip">biomarkers<span class="tooltiptext">Biomarkers are measurable substances in the body that indicate a biological state or condition.</span></span>. 
+                These biomarkers are crucial in diagnosing and monitoring inflammatory diseases, infections, and autoimmune conditions. 
+                The four key biomarkers that are central to our research include:
+            </p>
+            <ul>
+                <li>C-reactive Protein (CRP)</li>
+                <li>Interleukin-6 (IL-6)</li>
+                <li>Tumor Necrosis Factor-alpha (TNF-alpha)</li>
+                <li>Interleukin-1 (IL-1)</li>
+            </ul>
+        </section>
+
+        <!-- CRP Section -->
+        <section>
+            <h2>1. C-reactive Protein (CRP)</h2>
+            <p>
+                CRP is an acute-phase protein produced by the liver in response to 
+                <span class="tooltip">cytokines<span class="tooltiptext">Cytokines are signaling proteins secreted by cells to regulate immunity and inflammation.</span></span> like IL-6. 
+                Its levels rise during systemic inflammation, making it a key marker for identifying inflammatory responses.
+            </p>
+            <div class="image-container">
+                <a href="#" onclick="openLightbox('Images/CRPpathway.png')">
+                    <img src="Images/CRPpathway.png" alt="C-reactive Protein Pathway" style="max-width: 100%; height: auto;">
+                </a>
+                <div class="image-caption">
+                    <h4>Pathway Overview</h4>
+                    <p>This pathway highlights CRP's role in inflammatory responses.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- IL-6 Section -->
+        <section>
+            <h2>2. Interleukin-6 (IL-6)</h2>
+            <p>
+                IL-6 is a cytokine that regulates fever and inflammation. It promotes the differentiation of B cells and the production of acute-phase proteins like CRP.
+            </p>
+            <div class="image-container">
+                <a href="#" onclick="openLightbox('Images/IL6pathway.jpg')">
+                    <img src="Images/IL6pathway.jpg" alt="Interleukin-6 Pathway" style="max-width: 100%; height: auto;">
+                </a>
+                <div class="image-caption">
+                    <h4>Pathway Overview</h4>
+                    <p>This pathway highlights the systemic role of IL-6 in inflammation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TNF-alpha Section -->
+        <section>
+            <h2>3. Tumor Necrosis Factor-alpha (TNF-alpha)</h2>
+            <p>
+                TNF-alpha is a central mediator of inflammation, activating pathways like 
+                <span class="tooltip">NF-κB<span class="tooltiptext">NF-κB is a protein complex controlling DNA transcription and cytokine production.</span></span> 
+                to promote cytokine production and inflammation.
+            </p>
+            <div class="image-container">
+                <a href="#" onclick="openLightbox('Images/TNFpathway.png')">
+                    <img src="Images/TNFpathway.png" alt="TNF-alpha Pathway" style="max-width: 100%; height: auto;">
+                </a>
+                <div class="image-caption">
+                    <h4>Pathway Overview</h4>
+                    <p>This pathway maps TNF-alpha's role in inflammatory diseases.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- IL-1 Section -->
+        <section>
+            <h2>4. Interleukin-1 (IL-1)</h2>
+            <p>
+                IL-1 triggers inflammation by recruiting immune cells and promoting other pro-inflammatory cytokines like IL-6 and TNF-alpha. 
+                It also causes fever through its action on the hypothalamus.
+            </p>
+            <div class="image-container">
+                <a href="#" onclick="openLightbox('Images/IL1pathway.png')">
+                    <img src="Images/IL1pathway.png" alt="Interleukin-1 Pathway" style="max-width: 100%; height: auto;">
+                </a>
+                <div class="image-caption">
+                    <h4>Pathway Overview</h4>
+                    <p>This image highlights IL-1's key pathways in inflammation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Features Section -->
+        <section>
+            <h2>Common Features of These Biomarkers</h2>
+            <ul>
+                <li><strong>Inflammatory Response:</strong> All biomarkers play a role in initiating or propagating inflammation.</li>
+                <li><strong>Acute-Phase Response:</strong> CRP and cytokines like IL-6 regulate acute-phase proteins.</li>
+            </ul>
+        </section>
+
+        <!-- References Section -->
+        <section id="references">
+            <h2>References</h2>
+            <ol>
+                <li><a href="https://doi.org/10.1016/j.cell.2020.11.007" target="_blank">Husted et al., *Cell*, 2020.</a></li>
+                <li><a href="https://doi.org/10.1016/j.jid.2019.08.003" target="_blank">Sethi et al., *Journal of Inflammation Research*, 2019.</a></li>
+            </ol>
+        </section>
+
+        <footer>
+            <p>© 2024 Systemic Infection Research. All rights reserved.</p>
+        </footer>
+
+        <div id="lightbox" class="lightbox">
+            <span class="close-btn" onclick="closeLightbox()">×</span>
+            <img id="lightbox-img" src="" alt="Amplified Image">
+        </div>
+
+        <script>
+            function openLightbox(imageSrc) {
+                document.getElementById("lightbox").style.display = "flex";
+                document.getElementById("lightbox-img").src = imageSrc;
+            }
+            function closeLightbox() {
+                document.getElementById("lightbox").style.display = "none";
+            }
+        </script>
+    </body>
+</html>
