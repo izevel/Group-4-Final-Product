@@ -49,6 +49,18 @@ section {
     max-width: 800px;
 }
 
+/* Section Styles - visualization-section */
+.visualization-section {
+    margin: 0;
+    padding: 0;
+    background-color: transparent; /* Ensure background is transparent */
+    border-radius: 0;
+    box-shadow: none;
+    width: 100%; /* Ensure it takes up the full width */
+    height: 100vh; /* Ensure it takes up the full height of the viewport */
+}
+
+
 section h2, section h3 {
     font-family: 'Poppins', sans-serif;
     color: #002b5b;
@@ -163,3 +175,4 @@ footer {
     background-color: #001f3f;
     transform: translateY(1px);
 }
+
