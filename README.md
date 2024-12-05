@@ -23,10 +23,6 @@ The objective of the course is to learn how to interact with SPARQL endpoints us
 
 To get a local copy of this project up and running, follow these steps:
 
-## Getting Started
-
-To get a local copy of this project up and running, follow these steps:
-
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/Group-4-Final-Product.git
