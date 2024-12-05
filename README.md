@@ -35,16 +35,17 @@ To get a local copy of this project up and running, follow these steps:
 
 3. **Set up d3.js**: 
 The project uses the d3.js library for data visualization. You can include it in two ways:
+
+- Option 1: Use a CDN (recommended): Ensure the following <script> tag is included in the <head> section of your HTML file:
 ```bash
-Option 1: Use a CDN (recommended): Ensure the following <script> tag is included in the <head> section of your HTML file:
 <script src="https://d3js.org/d3.v6.min.js"></script>
 ```
 
-```bash
-Option 2: Download d3.js locally:
+- Option 2: Download d3.js locally:
 Download the library from d3js.org.
 Save it in a js directory within your project structure (e.g., Group-4-Final-Product/website/js/).
 Include it in your HTML file:
+```bash
 <script src="js/d3.v6.min.js"></script>
 ```
 
