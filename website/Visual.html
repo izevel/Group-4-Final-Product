@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- so it fits the dimensions of any device hopefully-->
+    <title>Explore</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script> <!-- D3.js integration-->
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        svg {
+            display: block; <!-- we hate unnecessary margins -->
+        }
+    </style>
+</head>
+<body>
+<script>
+        // Dimensions (set vis width and height to 90% because otherwise some nodes weren't visible)
+        const width = window.innerWidth * 0.9;
+        const height = window.innerHeight * 0.9;
+
+        // Append SVG (match page dimensions)
+        const svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // SPARQL query (FINAL query do not edit)
+        const query = `
+        SELECT ?protein ?proteinLabel ?biologicalprocess ?biologicalprocessLabel ?GOID ?proteinFamily ?proteinFamilyLabel
+        WHERE {
+          VALUES ?proteinID { "P05231" "P01375" "P02741" "P01584" }
+          ?protein wdt:P352 ?proteinID.
+          ?protein wdt:P682 ?biologicalprocess.
+          ?biologicalprocess wdt:P686 ?GOID.
+          OPTIONAL { ?protein wdt:P2094 ?proteinFamily. }
+          FILTER (?GOID IN ("GO:0019221", "GO:0006958", "GO:0043122", "GO:0043123", "GO:0046427", "GO:0043410", "GO:0000165", "GO:0032755", "GO:0032611", "GO:0001819", "GO:0006953", "GO:0032722"))
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+        }
+        LIMIT 5000`;
+
+        const endpoint = "https://query.wikidata.org/sparql";
+
+        // Fetch data from wikidata
+        fetch(`${endpoint}?query=${encodeURIComponent(query)}`, {
+            headers: { Accept: "application/json" },
+        })
+            .then(response => response.json()) //json to transport
+            .then(data => {
+                const nodes = [];
+                const links = [];
+
+                // response processing
+                data.results.bindings.forEach(binding => {
+                    const protein = binding.proteinLabel.value;
+                    const biologicalProcess = binding.biologicalprocessLabel.value;
+
+                    // add nodes if they don't already exist
+                    if (!nodes.find(n => n.id === protein)) {
+                        nodes.push({ id: protein, group: "protein" });
+                    }
+                    if (!nodes.find(n => n.id === biologicalProcess)) {
+                        nodes.push({ id: biologicalProcess, group: "biologicalprocess" });
+                    }
+
+                    // protein-bio process link
+                    links.push({ source: protein, target: biologicalProcess });
+                });
+
+                createVisualization(nodes, links);
+            })
+            .catch(err => console.error("Error fetching SPARQL data:", err));
+
+        function createVisualization(nodes, links) {
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(100)) // shortened the distance and it looks better now
+                .force("charge", d3.forceManyBody().strength(-220)) // Reduced repulsion
+                .force("center", d3.forceCenter(width / 2, height / 2)); //experiment with this
+
+            //links
+            const link = svg.append("g") //it's "g" not "svg:g" anymore
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .enter()
+                .append("line")
+                .attr("stroke", "#999")
+                .attr("stroke-width", 2);
+
+            //nodes
+            const node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(nodes)
+                .enter()
+                .append("circle")
+                .attr("r", 10)
+                .attr("fill", d => d.group === "protein" ? "#69b3a2" : "#ff6f61")
+                .call(d3.drag()
+                    .on("start", dragStarted)
+                    .on("drag", dragged)
+                    .on("end", dragEnded));
+
+            //labels
+            const label = svg.append("g")
+                .attr("class", "labels")
+                .selectAll("text")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .attr("dy", -15)
+                .attr("text-anchor", "middle")
+                .text(d => d.id)
+                .style("font-size", "12px")
+                .style("font-family", "Arial, sans-serif")
+                .style("fill", "#333");
+
+            // Update simulation on each tick
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("cx", d => d.x = Math.max(15, Math.min(width - 15, d.x))) // Keep nodes within bounds
+                    .attr("cy", d => d.y = Math.max(15, Math.min(height - 15, d.y))); // Keep nodes within bounds
+
+                label
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y);
+            });
+
+            // Drag physics
+            function dragStarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragEnded(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+    </script>
+</body>
+</html>
+
+
