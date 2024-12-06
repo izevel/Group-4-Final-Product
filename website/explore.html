@@ -1,14 +1,15 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explore</title>
+    <title>About Our Research</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
+
 <body>
     <header>
         <h1 class="title">Protein Visualization</h1>
@@ -36,134 +37,129 @@
     </footer>    
 
     <script>
-        const sparqlEndpoint = "https://query.wikidata.org/sparql";
-        const sparqlQuery = `
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+const svg = d3.select("#chart")
+    .attr("width", width)
+    .attr("height", height);
+
+
+        const query = `
         SELECT ?protein ?proteinLabel ?biologicalprocess ?biologicalprocessLabel ?GOID ?proteinFamily ?proteinFamilyLabel
-        WHERE {  
-          VALUES ?proteinID { "P05231" "P01375" "P02741" "P01584" }
-          ?protein wdt:P352 ?proteinID.
-          ?protein wdt:P682 ?biologicalprocess.
-          ?biologicalprocess wdt:P686 ?GOID
-          OPTIONAL { ?protein wdt:P2094 ?proteinFamily. }
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+        WHERE {
+            VALUES ?proteinID { "P05231" "P01375" "P02741" "P01584" }
+            ?protein wdt:P352 ?proteinID.
+            ?protein wdt:P682 ?biologicalprocess.
+            ?biologicalprocess wdt:P686 ?GOID.
+            OPTIONAL { ?protein wdt:P2094 ?proteinFamily. }
+            FILTER (?GOID IN ("GO:0019221", "GO:0006958", "GO:0043122", "GO:0043123", "GO:0046427", "GO:0043410", "GO:0000165", "GO:0032755", "GO:0032611", "GO:0001819", "GO:0006953", "GO:0032722"))
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
         }
         LIMIT 5000`;
 
-        fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
-            headers: { Accept: 'application/json' }
+        const endpoint = "https://query.wikidata.org/sparql";
+
+        fetch(`${endpoint}?query=${encodeURIComponent(query)}`, {
+            headers: { Accept: "application/json" },
         })
-        .then(response => response.json())
-        .then(data => {
-            const rawData = data.results.bindings;
+            .then(response => response.json())
+            .then(data => {
+                const nodes = [];
+                const links = [];
 
-            const relevantGOIDs = [
-                "GO:0006955", 
-                "GO:0032642",  
-                "GO:0034097"   
-            ];
+                data.results.bindings.forEach(binding => {
+                    const protein = binding.proteinLabel.value;
+                    const biologicalProcess = binding.biologicalprocessLabel.value;
 
-            const filteredData = rawData.filter(result => {
-                const GOID = result.GOID.value;
-                return relevantGOIDs.includes(GOID);  
-            });
+                    if (!nodes.find(n => n.id === protein)) {
+                        nodes.push({ id: protein, group: "protein" });
+                    }
+                    if (!nodes.find(n => n.id === biologicalProcess)) {
+                        nodes.push({ id: biologicalProcess, group: "biologicalprocess" });
+                    }
 
-            const nodes = [];
-            const nodeMap = {};
-
-            filteredData.forEach(result => {
-                const proteinLabel = result.proteinLabel.value;
-                if (!nodeMap[proteinLabel]) {
-                    nodeMap[proteinLabel] = { id: proteinLabel, name: proteinLabel, type: 'protein' };
-                    nodes.push(nodeMap[proteinLabel]);
-                }
-
-                const biologicalProcessLabel = result.biologicalprocessLabel.value;
-                if (!nodeMap[biologicalProcessLabel]) {
-                    nodeMap[biologicalProcessLabel] = { id: biologicalProcessLabel, name: biologicalProcessLabel, type: 'biologicalprocess' };
-                    nodes.push(nodeMap[biologicalProcessLabel]);
-                }
-
-                const proteinFamilyLabel = result.proteinFamilyLabel?.value;
-                if (proteinFamilyLabel && !nodeMap[proteinFamilyLabel]) {
-                    nodeMap[proteinFamilyLabel] = { id: proteinFamilyLabel, name: proteinFamilyLabel, type: 'proteinFamily' };
-                    nodes.push(nodeMap[proteinFamilyLabel]);
-                }
-            });
-
-            const links = filteredData.map(result => {
-                const protein = nodeMap[result.proteinLabel.value];
-                const biologicalProcess = nodeMap[result.biologicalprocessLabel.value];
-                const proteinFamily = result.proteinFamilyLabel ? nodeMap[result.proteinFamilyLabel.value] : null;
-
-                const edges = [
-                    { source: protein, target: biologicalProcess },
-                ];
-
-                if (proteinFamily) {
-                    edges.push({ source: protein, target: proteinFamily });
-                }
-
-                return edges;
-            }).flat();
-
-            const svg = d3.select("#chart");
-
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-
-            svg.attr("width", width).attr("height", height);
-
-            const simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).distance(150).strength(0.5))
-                .force("charge", d3.forceManyBody().strength(-300))
-                .force("center", d3.forceCenter(width / 2, height / 2)) 
-                .force("collision", d3.forceCollide().radius(50));
-
-            const link = svg.selectAll("line").data(links).enter()
-                .append("line")
-                .attr("stroke", "black")
-                .attr("stroke-width", 2);
-
-            const node = svg.selectAll("g").data(nodes).enter()
-                .append("g")
-                .call(d3.drag()
-                    .on("start", (event, d) => {
-                        if (!event.active) simulation.alphaTarget(0.3).restart();
-                        d.fx = d.x;
-                        d.fy = d.y;
-                    })
-                    .on("drag", (event, d) => {
-                        d.fx = event.x;
-                        d.fy = event.y;
-                    })
-                    .on("end", (event, d) => {
-                        if (!event.active) simulation.alphaTarget(0);
-                        d.fx = null;
-                        d.fy = null;
-                    }));
-
-            node.append("circle")
-                .attr("r", 10)
-                .attr("fill", d => {
-                    if (d.type === 'protein') return "purple";
-                    if (d.type === 'biologicalprocess') return "green";
-                    return "blue";
+                    links.push({ source: protein, target: biologicalProcess });
                 });
 
-            node.append("text")
-                .text(d => d.name)
-                .attr("dx", 12)
-                .attr("dy", 4);
+                createVisualization(nodes, links);
+            })
+            .catch(err => console.error("Error fetching SPARQL data:", err));
+
+        function createVisualization(nodes, links) {
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(150))
+                .force("charge", d3.forceManyBody().strength(-300))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            const link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .enter()
+                .append("line")
+                .attr("stroke", "#aaa")
+                .attr("stroke-width", 2);
+
+            const node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(nodes)
+                .enter()
+                .append("circle")
+                .attr("r", 10)
+                .attr("fill", d => d.group === "protein" ? "#69b3a2" : "#ff6f61")
+                .call(d3.drag()
+                    .on("start", dragStarted)
+                    .on("drag", dragged)
+                    .on("end", dragEnded));
+
+            const label = svg.append("g")
+                .attr("class", "labels")
+                .selectAll("text")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .attr("dy", -15)
+                .attr("text-anchor", "middle")
+                .text(d => d.id)
+                .style("font-size", "12px")
+                .style("font-family", "Arial, sans-serif")
+                .style("fill", "#333");
 
             simulation.on("tick", () => {
-                link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
-                    .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
 
-                node.attr("transform", d => `translate(${d.x},${d.y})`);
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                label
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y);
             });
-        })
-        .catch(error => console.error('Error:', error));
-    </script>
 
+            function dragStarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragEnded(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+    </script>
 </body>
 </html>
