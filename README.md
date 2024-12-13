@@ -77,7 +77,7 @@ The project uses the d3.js library for data visualization. You can include it in
 Below are example screenshots showcasing the behaviour of the visualizations in this project:
 
 #### Example 1: Visualization of Protein-Biological Process Relationships
-![Protein-Biological Process Visualization](screenshots/visualization-example-1.png)
+![Protein-Biological Process Visualization](images/visualization_example.png)
 
 
 *Contributions are welcome! If you'd like to improve the website or add new pathway visualizations, feel free to fork the repository and submit a pull request.*
