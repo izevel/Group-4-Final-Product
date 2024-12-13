@@ -1,14 +1,16 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore protein visualization and biological processes in systemic infection research.">
+    <meta name="author" content="Systemic Infection Research Team">
     <title>About Our Research</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
+
 
 <body>
     <header>
@@ -21,80 +23,89 @@
         </nav>
     </header>
 
-    <section class="visualization-section" style="width: 100%; height: 100vh; margin: 0; padding: 0;">
-        <svg id="chart"></svg> 
+    <section class="visualization-section">
+        <svg id="chart"></svg>
     </section>
 
-    <footer>
-        <p>© 2024 Systemic Infection Research. All rights reserved.</p>
-        <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
-            <a property="dct:title" rel="cc:attributionURL" href="https://github.com/izevel/Group-4-Final-Product">GenesGoneWild</a> by 
-            <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/martaaapb">Group4_UM_PRA3006</a> is licensed under 
-            <a href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">
-                CC BY 4.0
-                <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt="">
-                <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt="">
-            </a>
-        </p>
-    </footer>   
+    <section class="explanation-section">
+        <h2>More information:</h2>
+        <p>Click on any protein node to open its corresponding UniProt page for more details.</p>
+    </section>
+    
+    <section class="legend-section">
+        <h3>Legend</h3>
+        <ul>
+            <li><span class="protein-legend-color"></span> Protein</li>
+            <li><span class="process-legend-color"></span> Biological Process</li>
+        </ul>
+    </section>
+    
 
     <script>
         const width = window.innerWidth;
         const height = window.innerHeight;
-        
-    const svg = d3.select("#chart")
-    .attr("width", width)
-    .attr("height", height);
 
+        const svg = d3.select("#chart")
+            .attr("width", width)
+            .attr("height", height);
 
         const query = `
-        SELECT ?protein ?proteinLabel ?biologicalprocess ?biologicalprocessLabel ?GOID ?proteinFamily ?proteinFamilyLabel
-        WHERE {
-            VALUES ?proteinID { "P05231" "P01375" "P02741" "P01584" }
-            ?protein wdt:P352 ?proteinID.
-            ?protein wdt:P682 ?biologicalprocess.
-            ?biologicalprocess wdt:P686 ?GOID.
-            OPTIONAL { ?protein wdt:P2094 ?proteinFamily. }
-            FILTER (?GOID IN ("GO:0019221", "GO:0006958", "GO:0043122", "GO:0043123", "GO:0046427", "GO:0043410", "GO:0000165", "GO:0032755", "GO:0032611", "GO:0001819", "GO:0006953", "GO:0032722"))
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-        }
-        LIMIT 5000`;
-        
+            SELECT ?protein ?proteinLabel ?biologicalprocess ?biologicalprocessLabel ?GOID ?proteinFamily ?proteinFamilyLabel
+            WHERE {
+                VALUES ?proteinID { "P05231" "P01375" "P02741" "P01584" }
+                ?protein wdt:P352 ?proteinID.
+                ?protein wdt:P682 ?biologicalprocess.
+                ?biologicalprocess wdt:P686 ?GOID.
+                OPTIONAL { ?protein wdt:P2094 ?proteinFamily. }
+                FILTER (?GOID IN ("GO:0019221", "GO:0006958", "GO:0043122", "GO:0043123", "GO:0046427", "GO:0043410", "GO:0000165", "GO:0032755", "GO:0032611", "GO:0001819", "GO:0006953", "GO:0032722"))
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+            }
+            LIMIT 5000`;
 
         const endpoint = "https://query.wikidata.org/sparql";
+
+        const proteinMapping = {
+            "Interleukin 1 beta": "P01584",  // UniProt ID for Interleukin 1
+            "Interleukin 6": "Q75MH2",  // UniProt ID for Interleukin 6
+            "C-reactive protein": "P02741",            // UniProt ID for CRP
+            "tumor necrosis factor": "P01375"             // UniProt ID for TNF
+        };
 
         fetch(`${endpoint}?query=${encodeURIComponent(query)}`, {
             headers: { Accept: "application/json" },
         })
-            .then(response => response.json())
-            .then(data => {
-                const nodes = [];
-                const links = [];
+        .then(response => response.json())
+        .then(data => {
+            const nodes = [];
+            const links = [];
 
-                data.results.bindings.forEach(binding => {
-                    const protein = binding.proteinLabel.value;
-                    const biologicalProcess = binding.biologicalprocessLabel.value;
+            data.results.bindings.forEach(binding => {
+                const protein = binding.proteinLabel.value;
+                const biologicalProcess = binding.biologicalprocessLabel.value;
 
-                    if (!nodes.find(n => n.id === protein)) {
-                        nodes.push({ id: protein, group: "protein" });
-                    }
-                    if (!nodes.find(n => n.id === biologicalProcess)) {
-                        nodes.push({ id: biologicalProcess, group: "biologicalprocess" });
-                    }
+                if (!nodes.some(n => n.id === protein)) {
+                    nodes.push({ id: protein, group: "protein" });
+                }
+                if (!nodes.some(n => n.id === biologicalProcess)) {
+                    nodes.push({ id: biologicalProcess, group: "biologicalprocess" });
+                }
 
-                    links.push({ source: protein, target: biologicalProcess });
-                });
+                links.push({ source: protein, target: biologicalProcess });
+            });
 
-                createVisualization(nodes, links);
-            }) 
-            .catch(err => console.error("Error fetching SPARQL data:", err));
-            
+            createVisualization(nodes, links);
+        })
+        .catch(err => {
+            console.error("Error fetching SPARQL data:", err);
+        });
 
-            function createVisualization(nodes, links) {
+        function createVisualization(nodes, links) {
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-        .force("charge", d3.forceManyBody().strength(-300))
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("link", d3.forceLink(links).id(d => d.id).distance(250)) // Increased distance for more separation
+        .force("charge", d3.forceManyBody().strength(-500)) // Increased repulsion for further separation
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("x", d3.forceX().strength(0.1).x(width / 2))
+        .force("y", d3.forceY().strength(0.1).y(height / 2));
 
     const link = svg.append("g")
         .attr("class", "links")
@@ -117,34 +128,26 @@
             .on("end", dragEnded));
 
     node.append("circle")
-        .attr("r", 15) // Slightly larger radius to accommodate the button
+        .attr("r", 15)
         .attr("fill", d => d.group === "protein" ? "#69b3a2" : "#ff6f61");
 
-    // Add button directly on the node
+    // Adding a clickable event for protein nodes
     node.filter(d => d.group === "protein")
-        .append("foreignObject")
-        .attr("width", 30) // Button dimensions
-        .attr("height", 30)
-        .attr("x", -15) // Center the button
-        .attr("y", -15)
-        .append("xhtml:button")
-        .style("width", "30px")
-        .style("height", "30px")
-        .style("font-size", "10px")
-        .style("border-radius", "50%") // Make the button circular
-        .style("border", "none")
-        .style("background-color", "#ffffffaa") // Semi-transparent white background
-        .style("cursor", "pointer")
-        .text("")
         .on("click", (event, d) => {
-            // Construct the URL dynamically based on the protein's ID
-            const url = `https://www.uniprot.org/uniprot/${d.id}`;
-            window.open(url, '_blank'); // Open the URL in a new tab
+            console.log("Clicked protein node:", d.id); // Debugging line
+
+            const uniProtID = proteinMapping[d.id]; // Fetch the corresponding UniProt ID
+            if (uniProtID) {
+                const url = `https://www.uniprot.org/uniprot/${uniProtID}`; // Construct the UniProt URL
+                console.log("Redirecting to:", url); // Debugging line
+                window.open(url, '_blank'); // Open in a new tab
+            } else {
+                console.error(`No UniProt ID found for ${d.id}`);
+            }
         });
 
-    // Add labels above each node
     node.append("text")
-        .attr("dy", -20) // Position label slightly above the node
+        .attr("dy", -20)
         .attr("text-anchor", "middle")
         .text(d => d.id)
         .style("font-size", "12px")
@@ -152,8 +155,7 @@
         .style("fill", "#333");
 
     simulation.on("tick", () => {
-        link
-            .attr("x1", d => d.source.x)
+        link.attr("x1", d => d.source.x)
             .attr("y1", d => d.source.y)
             .attr("x2", d => d.target.x)
             .attr("y2", d => d.target.y);
@@ -168,16 +170,33 @@
     }
 
     function dragged(event, d) {
+        // Update the fixed position of the node while dragging
         d.fx = event.x;
         d.fy = event.y;
     }
 
     function dragEnded(event, d) {
         if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
+        d.fx = null; // Allow the node to be free again once the drag ends
         d.fy = null;
     }
 }
+
+
     </script>
+
+<footer>
+    <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
+        <a property="dct:title" rel="cc:attributionURL" href="https://github.com/izevel/Group-4-Final-Product">GenesGoneWild</a> by 
+        <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/martaaapb">Group4_UM_PRA3006</a> is licensed under 
+        <a href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">
+            CC BY 4.0
+            <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt="">
+            <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt="">
+        </a>
+    </p>
+</footer>  
+ 
 </body>
 </html>
+
