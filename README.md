@@ -4,20 +4,42 @@
 
 This repository contains resources for a web-based project related to biomarkers and inflammatory pathways. The primary focus is on visualizing key signaling pathways involved in inflammation, such as CRP (C-reactive protein), IL-1, IL-6, and TNF. These visualizations help in understanding the role of these biomarkers in various physiological and disease processes.
 
-The project is built with a simple HTML, CSS, and image-based structure. It includes an informative website that presents these pathways alongside their respective images. The website is styled with custom CSS to ensure an engaging and clean user experience.
+This project was developed during the **Practical Programming in the Life Sciences (2425-PRA3006)** course at **Maastricht University**, in the **Maastricht Science Programme** bachelor's degree.
 
-This project was developed during the **Practical Programming in the Life Sciences (2425-PRA3006)** course at **Maastricht University**, in the **Maastricht Science Programme** bachelor's degree. 
+The objective of the course is to learn how to interact with SPARQL endpoints using JavaScript and visualize the results graphically with libraries like **D3.js** or **Cytoscape.js**. The project is built with a simple HTML, CSS, and JavaScript-based structure. It includes an informative website that presents these pathways alongside their respective images. The website is styled with custom CSS to ensure an engaging and clean user experience.
 
-The objective of the course is to learn how to interact with SPARQL endpoints using JavaScript and visualize the results graphically with libraries like **d3.js** or **Cytoscape.js**.
+---
 
-## Features:
+## Features
+
+- **Dynamic Data Visualization**: Interactive visualizations of relationships between proteins and biological processes using D3.js.
 - **Biomarker Pathways**: Visual representations of inflammatory pathways like CRP, IL-1, IL-6, and TNF.
 - **Responsive Website**: Basic HTML and CSS layout for presenting the pathways and relevant content.
 - **Images**: High-quality pathway diagrams to visualize the biological processes.
 
-## Project Structure:
-- **Images**: Contains images for various inflammatory pathways (e.g., CRP, IL1, IL6, TNF).
-- **Website**: Contains HTML and CSS files for the website layout and design.
+---
+
+## Technology Choices
+
+### Why D3.js?
+D3.js was chosen for this project due to its powerful capabilities for creating dynamic, data-driven visualizations. It supports:
+- Customizable layouts, such as force-directed graphs, to represent biological relationships.
+- Scalability for handling data of varying sizes and complexities.
+- Seamless integration with HTML and CSS for visually appealing designs.
+
+### Why SPARQL?
+SPARQL was used to query interconnected biological data from Wikidata, as it provides:
+- A robust query language for datasets in RDF format.
+- The ability to dynamically query proteins, biological processes, and related Gene Ontology (GO) terms.
+---
+
+## Project Structure
+
+- **HTML**: Contains the website layout and interactive components.
+- **CSS**: Custom styling to ensure a clean and responsive design.
+- **JavaScript**: Handles data fetching from the SPARQL endpoint and visualizes the results using D3.js.
+
+---
 
 ## Getting Started
 
@@ -26,7 +48,6 @@ To get a local copy of this project up and running, follow these steps:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/Group-4-Final-Product.git
-   ```
 
 2. **Navigate to the website directory**:
    ```bash
@@ -51,4 +72,14 @@ The project uses the d3.js library for data visualization. You can include it in
 
 4. **Open the `homepage.html` file in your preferred web browser to view the project.**
 
+5. ### Expected Visualizations
+
+Below are example screenshots showcasing the behaviour of the visualizations in this project:
+
+#### Example 1: Visualization of Protein-Biological Process Relationships
+![Protein-Biological Process Visualization](screenshots/visualization-example-1.png)
+
+
 *Contributions are welcome! If you'd like to improve the website or add new pathway visualizations, feel free to fork the repository and submit a pull request.*
+
+
