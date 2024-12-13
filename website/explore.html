@@ -35,42 +35,44 @@
             </a>
         </p>
     </footer>    
-
     <script>
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+    //start by definint all constants
+    const width = window.innerWidth;
+    const height = window.innerHeight;
         
-const svg = d3.select("#chart")
-    .attr("width", width)
-    .attr("height", height);
-
-
-        const query = `
+    const svg = d3.select("#chart")
+        .attr("width", width)
+        .attr("height", height);
+        
+    //add in query to fetch data
+    const query = `
         SELECT ?protein ?proteinLabel ?biologicalprocess ?biologicalprocessLabel ?GOID ?proteinFamily ?proteinFamilyLabel
-        WHERE {
-            VALUES ?proteinID { "P05231" "P01375" "P02741" "P01584" }
-            ?protein wdt:P352 ?proteinID.
-            ?protein wdt:P682 ?biologicalprocess.
-            ?biologicalprocess wdt:P686 ?GOID.
-            OPTIONAL { ?protein wdt:P2094 ?proteinFamily. }
-            FILTER (?GOID IN ("GO:0019221", "GO:0006958", "GO:0043122", "GO:0043123", "GO:0046427", "GO:0043410", "GO:0000165", "GO:0032755", "GO:0032611", "GO:0001819", "GO:0006953", "GO:0032722"))
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-        }
+            WHERE {
+                VALUES ?proteinID { "P05231" "P01375" "P02741" "P01584" }
+                ?protein wdt:P352 ?proteinID.
+                ?protein wdt:P682 ?biologicalprocess.
+                ?biologicalprocess wdt:P686 ?GOID.
+                OPTIONAL { ?protein wdt:P2094 ?proteinFamily. }
+                FILTER (?GOID IN ("GO:0019221", "GO:0006958", "GO:0043122", "GO:0043123", "GO:0046427", "GO:0043410", "GO:0000165", "GO:0032755", "GO:0032611", "GO:0001819", "GO:0006953", "GO:0032722"))
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+            }
         LIMIT 5000`;
 
-        const endpoint = "https://query.wikidata.org/sparql";
+    const endpoint = "https://query.wikidata.org/sparql";
 
-        fetch(`${endpoint}?query=${encodeURIComponent(query)}`, {
+    //fetching data 
+    fetch(`${endpoint}?query=${encodeURIComponent(query)}`, {
             headers: { Accept: "application/json" },
-        })
-            .then(response => response.json())
-            .then(data => {
-                const nodes = [];
-                const links = [];
+    })
+        //convert to json 
+        .then(response => response.json())
+        .then(data => {
+            const nodes = [];
+            const links = [];
 
-                data.results.bindings.forEach(binding => {
-                    const protein = binding.proteinLabel.value;
-                    const biologicalProcess = binding.biologicalprocessLabel.value;
+    data.results.bindings.forEach(binding => { //define different nodes for proteins and biological processes so we can link differently and change colours
+            const protein = binding.proteinLabel.value;
+            const biologicalProcess = binding.biologicalprocessLabel.value;
 
                     if (!nodes.find(n => n.id === protein)) {
                         nodes.push({ id: protein, group: "protein" });
@@ -82,52 +84,53 @@ const svg = d3.select("#chart")
                     links.push({ source: protein, target: biologicalProcess });
                 });
 
-                createVisualization(nodes, links);
+    //visualization
+    createVisualization(nodes, links);
             })
             .catch(err => console.error("Error fetching SPARQL data:", err));
 
-        function createVisualization(nodes, links) {
+        function createVisualization(nodes, links) { //setup
             const simulation = d3.forceSimulation(nodes)
                 .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-                .force("charge", d3.forceManyBody().strength(-300))
-                .force("center", d3.forceCenter(width / 2, height / 2));
+                .force("charge", d3.forceManyBody().strength(-300)) //repulsive so there's no label overlap
+                .force("center", d3.forceCenter(width / 2, height / 2)); //centering
 
-            const link = svg.append("g")
+            const link = svg.append("g") //lines to symbolise the relationships, protein to biological process
                 .attr("class", "links")
                 .selectAll("line")
                 .data(links)
                 .enter()
                 .append("line")
                 .attr("stroke", "#aaa")
-                .attr("stroke-width", 2);
+                .attr("stroke-width", 2); // made it thinner 
 
-            const node = svg.append("g")
+            const node = svg.append("g") //circles for nodes, proteins and biological processes
                 .attr("class", "nodes")
                 .selectAll("circle")
                 .data(nodes)
                 .enter()
                 .append("circle")
-                .attr("r", 10)
-                .attr("fill", d => d.group === "protein" ? "#69b3a2" : "#ff6f61")
-                .call(d3.drag()
+                .attr("r", 10) // can't fit in the labels anyways so might as well make them small
+                .attr("fill", d => d.group === "protein" ? "#69b3a2" : "#ff6f61") //EXAM FEEDBACK: changed colours for accessibility 
+                .call(d3.drag() //add drag for the drag physics events later
                     .on("start", dragStarted)
                     .on("drag", dragged)
                     .on("end", dragEnded));
 
             const label = svg.append("g")
                 .attr("class", "labels")
-                .selectAll("text")
+                .selectAll("text") //add the labels
                 .data(nodes)
                 .enter()
                 .append("text")
-                .attr("dy", -15)
+                .attr("dy", -15) //is this okay???
                 .attr("text-anchor", "middle")
                 .text(d => d.id)
                 .style("font-size", "12px")
                 .style("font-family", "Arial, sans-serif")
                 .style("fill", "#333");
 
-            simulation.on("tick", () => {
+            simulation.on("tick", () => {  //event, to actually allow the nodes to change position
                 link
                     .attr("x1", d => d.source.x)
                     .attr("y1", d => d.source.y)
@@ -143,8 +146,8 @@ const svg = d3.select("#chart")
                     .attr("y", d => d.y);
             });
 
-            function dragStarted(event, d) {
-                if (!event.active) simulation.alphaTarget(0.3).restart();
+            function dragStarted(event, d) { //drag physics!! Drawing from the tick event
+                if (!event.active) simulation.alphaTarget(0.3).restart(); //EXAM FEEDBACK: lowered alphaTarget for less movement
                 d.fx = d.x;
                 d.fy = d.y;
             }
