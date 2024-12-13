@@ -175,3 +175,40 @@ footer {
     background-color: #001f3f;
     transform: translateY(1px);
 }
+
+
+.explanation-section {
+    font-family: Arial, sans-serif;
+}
+
+.legend-section {
+    font-family: Arial, sans-serif;
+}
+
+.legend-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.legend-section li {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.protein-legend-color,
+.process-legend-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.protein-legend-color {
+    background-color: #69b3a2; /* Same color as protein nodes */
+}
+
+.process-legend-color {
+    background-color: #ff6f61; /* Same color as biological process nodes */
+}
+
